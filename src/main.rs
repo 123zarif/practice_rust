@@ -1,19 +1,22 @@
-use axum::{
-    routing::get,
-    Router,
-    response::Json
+use mongodb::{
+    Client, Collection,
+    bson::{Document, doc},
 };
-use serde_json::{Value, json};
 
 #[tokio::main]
+async fn main() -> mongodb::error::Result<()> {
+    let uri = "mongodb+srv://server:server123%40@cluster0.nuhlzny.mongodb.net/?appName=Cluster0";
 
+    let client = Client::with_uri_str(uri).await?;
 
-async fn main() {
-    let app = Router::new().route("/", get(Json(json!({"id": "1"}))));
+    let db = client.database("Calendar");
+    let cols: Collection<Document> = db.collection("Events");
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await.expect("Server listener failed!");
+    let mut events = cols.find(doc! {}).await?;
 
-    axum::serve(listener, app).await.unwrap();
+    while let Some(event) = events.try_next().await? {
+        print!("{:#?}", event)
+    }
+
+    Ok(())
 }
-
-
