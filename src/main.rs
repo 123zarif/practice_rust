@@ -1,7 +1,11 @@
-use mongodb::{
-    Client, Collection,
-    bson::{Document, doc},
-};
+use futures::TryStreamExt;
+use mongodb::{Client, Collection, bson::doc};
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Event {
+    name: String,
+}
 
 #[tokio::main]
 async fn main() -> mongodb::error::Result<()> {
@@ -10,12 +14,12 @@ async fn main() -> mongodb::error::Result<()> {
     let client = Client::with_uri_str(uri).await?;
 
     let db = client.database("Calendar");
-    let cols: Collection<Document> = db.collection("Events");
+    let cols: Collection<Event> = db.collection("Events");
 
     let mut events = cols.find(doc! {}).await?;
 
     while let Some(event) = events.try_next().await? {
-        print!("{:#?}", event)
+        println!("{:#?}", event)
     }
 
     Ok(())
