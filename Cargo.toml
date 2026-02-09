@@ -7,6 +7,8 @@ edition = "2024"
 tokio = { version = "1.49", features = ["full"] }
 serde = "1.0.228"
 futures = "0.3"
+chrono = { version = "0.4", features = ["serde"] }
+
 
 [dependencies.mongodb]
 version = "3.5.1"
