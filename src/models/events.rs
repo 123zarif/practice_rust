@@ -1,4 +1,4 @@
-use chrono::{NaiveTime, Utc};
+use chrono::{NaiveDate, NaiveTime};
 use mongodb::{
     Collection,
     bson::{DateTime, oid::ObjectId},
@@ -29,7 +29,7 @@ impl Event {
         let st = NaiveTime::parse_from_str(&start_time, "%H:%M").expect("Error Parsing time!");
         let et = NaiveTime::parse_from_str(&end_time, "%H:%M").expect("Error parsing Time!");
 
-        let date = Utc::now().date_naive();
+        let date = NaiveDate::from_ymd_opt(1970, 1, 1).unwrap();
 
         let start_dt = date.and_time(st);
         let start_ms = start_dt.and_utc().timestamp_millis();

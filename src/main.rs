@@ -3,9 +3,11 @@ use mongodb::{Client, Collection};
 use std::env;
 
 mod add_event;
+mod current_event;
 mod models;
 
 use crate::add_event::add_event;
+use crate::current_event::current_event;
 use crate::models::events::Event;
 
 #[tokio::main]
@@ -24,6 +26,8 @@ async fn main() -> mongodb::error::Result<()> {
 
     if query == "add" {
         add_event(&collection).await?;
+    } else if query == "current" {
+        current_event(&collection).await?;
     }
 
     Ok(())
