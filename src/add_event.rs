@@ -6,6 +6,7 @@ pub async fn add_event(collection: &Collection<Event>) -> mongodb::error::Result
     let mut event_type = String::new();
     let mut start_time = String::new();
     let mut end_time = String::new();
+    let mut days: Vec<u8> = vec![];
 
     println!("Enter event name:");
     std::io::stdin()
@@ -27,12 +28,50 @@ pub async fn add_event(collection: &Collection<Event>) -> mongodb::error::Result
         .read_line(&mut end_time)
         .expect("Invalid time");
 
+    println!("1 - Sunday");
+    println!("2 - Monday");
+    println!("3 - Tuesday");
+    println!("4 - Wednesday");
+    println!("5 - Thursday");
+    println!("6 - Friday");
+    println!("7 - Saturday");
+
+    println!("Press (e) to finish");
+
+    loop {
+        println!("Enter Days:");
+
+        let mut input = String::new();
+
+        std::io::stdin()
+            .read_line(&mut input)
+            .expect("Invalid Day!");
+
+        if input.trim() == "e" {
+            break;
+        }
+
+        let number: u8 = match input.trim().parse() {
+            Ok(num) => num,
+            Err(_) => {
+                println!("Wrong Input!");
+                break;
+            }
+        };
+
+        if number > 0 && number < 8 {
+            days.push(number);
+        } else {
+            println!("Wrong Number Entered enter (1-7)!")
+        }
+    }
+
     Event::add_event(
         &collection,
         name.trim().to_string(),
         start_time.trim().to_string(),
         end_time.trim().to_string(),
-        vec![2, 3],
+        days,
         event_type.trim().to_string(),
     )
     .await?;
